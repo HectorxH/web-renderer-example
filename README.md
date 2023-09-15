@@ -8,11 +8,13 @@ The proyect is built entierly on Rust as a learning experience. The server is ma
 You will need [wasm-pack](https://rustwasm.github.io/wasm-pack/) and [cargo](https://github.com/rust-lang/cargo).
 
 - To run the renderer as a standalone program use:
+
 ```bash
 cargo run --bin renderer
 ```
 
 - To run the web renderer use:
+
 ```bash
 make run
 ```
