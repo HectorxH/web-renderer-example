@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rust web renderer example!</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index,follow">
+
+    <link href="./assets/css/main.css" rel="stylesheet" />
+</head>
+
+<body>
+    <h1>Welcome!</h1>
+    <div id="wasm-renderer">
+        <script type="module">
+            import init from "./wasm/renderer.js";
+            init();
+        </script>
+    </div>
+</body>
+
+</html>

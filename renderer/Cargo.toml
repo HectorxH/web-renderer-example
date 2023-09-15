@@ -1,0 +1,29 @@
+[package]
+name = "renderer"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.75"
+cfg-if = "1.0.0"
+console_error_panic_hook = "0.1.7"
+console_log = "1.0.0"
+env_logger = "0.10.0"
+log = "0.4.20"
+pollster = "0.3.0"
+wasm-bindgen = "0.2.87"
+wasm-bindgen-futures = "0.4.37"
+web-sys = { version = "0.3.64", features = ["Document", "Window", "Element"] }
+wgpu = { version = "0.17.0", features = ["webgl"] }
+winit = "0.28.6"
+
+[lib]
+name = "renderer"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "renderer"
+path = "src/main.rs"
