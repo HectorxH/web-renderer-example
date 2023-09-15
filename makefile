@@ -1,11 +1,11 @@
-public/wasm/renderer.js: renderer/src/*.rs
+public/wasm/renderer.js: renderer/*
 	wasm-pack build --target web --out-dir ../public/wasm renderer
 
-renderer: target/debug/build/renderer target/debug/build/renderer.rlib
+target/debug/build/renderer: renderer/*
 	cargo build --lib renderer
 	cargo build --bin renderer
 
-server: target/debug/build/server
+target/debug/build/server: server/*
 	cargo build --bin server
 
 watch-renderer-wasm: 
@@ -21,3 +21,8 @@ watch:
 	parallel -j 2 -- \
 	"wasm-pack build --target web --out-dir ../public/wasm renderer" \
 	"cargo watch -x 'run --bin server'"
+
+build: target/debug/build/server public/wasm/renderer.js
+
+run: build
+	cargo run --bin server
