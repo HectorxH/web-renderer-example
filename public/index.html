@@ -16,9 +16,23 @@
     <div id="wasm-renderer">
         <script type="module">
             import init from "./wasm/renderer.js";
+
+            // // Canvas jpeg load
+            // const texture_canvas = document.getElementById("wasm-texture");
+            // const context2d = texture_canvas.getContext("2d");
+            // const texture = new Image();
+            // texture.src = "./assets/texture.png";
+            // texture.onload = () => {
+            //     texture_canvas.width = texture.width;
+            //     texture_canvas.height = texture.height;
+            //     context2d.drawImage(texture, 0, 0);
+            //     init();
+            // };
+
             init();
         </script>
     </div>
+    <canvas hidden id="wasm-texture"></canvas>
 </body>
 
 </html>
