@@ -14,12 +14,15 @@ use winit::{
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
+#[macro_use]
+extern crate static_assertions;
+
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub async fn run() {
     cfg_if::cfg_if! {
         if #[cfg(target_arch = "wasm32")] {
             std::panic::set_hook(Box::new(console_error_panic_hook::hook));
-            console_log::init_with_level(log::Level::Debug).expect("Couldn't initialize logger");
+            console_log::init_with_level(log::Level::Info).expect("Couldn't initialize logger");
         } else {
             env_logger::init();
         }
@@ -93,9 +96,14 @@ fn input_handler(input: &KeyboardInput, state: &mut State, control_flow: &mut Co
         } => *control_flow = ControlFlow::Exit,
         Input {
             state: ElementState::Pressed,
+            virtual_keycode: Some(VirtualKeyCode::Q),
+            ..
+        } => state.next_pipeline(),
+        Input {
+            state: ElementState::Pressed,
             virtual_keycode: Some(VirtualKeyCode::Space),
             ..
-        } => state.current_pipeline ^= 1, // hacky way to swap between pipeline 1 and 2
+        } => state.next_buffer(),
         _ => {}
     }
 }
