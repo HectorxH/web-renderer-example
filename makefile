@@ -1,11 +1,11 @@
-public/wasm/renderer.js: renderer/*
+public/wasm/renderer.js: $(shell find renderer)
 	wasm-pack build --target web --out-dir ../public/wasm renderer
 
-target/debug/build/renderer: renderer/*
+target/debug/build/renderer: $(shell find renderer)
 	cargo build --lib renderer
 	cargo build --bin renderer
 
-target/debug/build/server: server/*
+target/debug/build/server: $(shell find server)
 	cargo build --bin server
 
 watch-renderer-wasm: 
