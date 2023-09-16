@@ -1,4 +1,5 @@
 //! Wgpu renderer implemented based on https://sotrh.github.io/learn-wgpu/
+mod buffers;
 mod state;
 
 use state::State;
