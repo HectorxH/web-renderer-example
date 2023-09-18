@@ -1,7 +1,8 @@
 //! Wgpu renderer implemented based on https://sotrh.github.io/learn-wgpu/
-mod buffers;
+mod camera;
 mod state;
 mod texture;
+mod vertex;
 
 use state::State;
 
@@ -90,11 +91,7 @@ pub async fn run() {
         Event::WindowEvent {
             window_id,
             ref event,
-        } if window_id == state.window().id() => {
-            if !state.input(event) {
-                window_event_handler(event, &mut state, control_flow)
-            }
-        }
+        } if window_id == state.window().id() => state.input(event, control_flow),
         Event::RedrawRequested(window_id) if window_id == state.window().id() => {
             state.update();
             match state.render() {
@@ -107,37 +104,4 @@ pub async fn run() {
         Event::MainEventsCleared => state.window().request_redraw(),
         _ => {}
     });
-}
-
-fn window_event_handler(event: &WindowEvent, state: &mut State, control_flow: &mut ControlFlow) {
-    use WindowEvent as WE;
-    match event {
-        WE::CloseRequested => *control_flow = ControlFlow::Exit,
-        WE::Resized(physical_size) => state.resize(*physical_size),
-        WE::ScaleFactorChanged { new_inner_size, .. } => state.resize(**new_inner_size),
-        WE::KeyboardInput { input, .. } => input_handler(input, state, control_flow),
-        _ => {}
-    };
-}
-
-fn input_handler(input: &KeyboardInput, state: &mut State, control_flow: &mut ControlFlow) {
-    use KeyboardInput as Input;
-    match input {
-        Input {
-            state: ElementState::Pressed,
-            virtual_keycode: Some(VirtualKeyCode::Escape),
-            ..
-        } => *control_flow = ControlFlow::Exit,
-        Input {
-            state: ElementState::Pressed,
-            virtual_keycode: Some(VirtualKeyCode::Q),
-            ..
-        } => state.next_pipeline(),
-        Input {
-            state: ElementState::Pressed,
-            virtual_keycode: Some(VirtualKeyCode::Space),
-            ..
-        } => state.next_buffer(),
-        _ => {}
-    }
 }
