@@ -1,5 +1,6 @@
 //! Wgpu renderer implemented based on https://sotrh.github.io/learn-wgpu/
 mod camera;
+mod instance;
 mod state;
 mod texture;
 mod vertex;

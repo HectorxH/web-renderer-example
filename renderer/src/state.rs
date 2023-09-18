@@ -1,8 +1,16 @@
-use crate::{camera, texture, vertex};
+use crate::{camera, instance, texture, vertex};
+use cgmath::prelude::*;
 use wgpu::util::DeviceExt;
 use winit::event::{ElementState, KeyboardInput, VirtualKeyCode, WindowEvent};
 use winit::event_loop::ControlFlow;
 use winit::window::Window;
+
+const N_INSTANCES: [u32; 2] = [10, 10];
+const INSTANCE_DISPLACEMENT: cgmath::Vector3<f32> = cgmath::Vector3::new(
+    N_INSTANCES[0] as f32 * 0.5,
+    0.0,
+    N_INSTANCES[1] as f32 * 0.5,
+);
 
 const N_BUFFERS: usize = 2;
 
@@ -110,6 +118,8 @@ pub struct State {
     camera_bind_group: wgpu::BindGroup,
     camera_buffer: wgpu::Buffer,
     camera_uniform: camera::CameraUniform,
+    instances: Vec<instance::Instance>,
+    instance_buffer: wgpu::Buffer,
 }
 
 impl State {
@@ -266,6 +276,40 @@ impl State {
 
         let camera_controller = camera::CameraController::new(0.1);
 
+        // # Instance Buffers
+        let instances: Vec<_> = (0..N_INSTANCES[0])
+            .flat_map(|z| {
+                (0..N_INSTANCES[1]).map(move |x| {
+                    let position = cgmath::Vector3 {
+                        x: x as f32,
+                        y: 0.0,
+                        z: z as f32,
+                    } - INSTANCE_DISPLACEMENT;
+                    instance::Instance {
+                        position,
+                        rotation: if position.is_zero() {
+                            cgmath::Quaternion::from_axis_angle(
+                                cgmath::Vector3::unit_z(),
+                                cgmath::Deg(0.0),
+                            )
+                        } else {
+                            cgmath::Quaternion::from_axis_angle(
+                                position.normalize(),
+                                cgmath::Deg(45.0),
+                            )
+                        },
+                    }
+                })
+            })
+            .collect();
+
+        let instance_data: Vec<_> = instances.iter().map(instance::Instance::to_raw).collect();
+        let instance_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Instance Buffer"),
+            usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
+            contents: bytemuck::cast_slice(&instance_data),
+        });
+
         // # Render Pipeline
         let shaders = [
             device.create_shader_module(wgpu::include_wgsl!("shaders/shader1.wgsl")),
@@ -286,7 +330,7 @@ impl State {
                 vertex: wgpu::VertexState {
                     module: &shaders[i],
                     entry_point: "vs_main",
-                    buffers: &[vertex::Vertex::description()],
+                    buffers: &[vertex::Vertex::description(), instance::InstanceRaw::desc()],
                 },
                 fragment: Some(wgpu::FragmentState {
                     module: &shaders[i],
@@ -358,6 +402,8 @@ impl State {
             camera_buffer,
             camera_uniform,
             camera_controller,
+            instances,
+            instance_buffer,
         }
     }
 
@@ -470,12 +516,14 @@ impl State {
         render_pass.set_bind_group(0, &self.diffuse_bind_group, &[]);
         render_pass.set_bind_group(1, &self.camera_bind_group, &[]);
         render_pass.set_vertex_buffer(0, self.vertex_buffers[self.current_buffer].slice(..));
+        render_pass.set_vertex_buffer(1, self.instance_buffer.slice(..));
         render_pass.set_index_buffer(
             self.index_buffers[self.current_buffer].slice(..),
             wgpu::IndexFormat::Uint16,
         );
         let n_indices = INDICES[self.current_buffer].len() as u32;
-        render_pass.draw_indexed(0..n_indices, 0, 0..1);
+        let n_instances = self.instances.len() as u32;
+        render_pass.draw_indexed(0..n_indices, 0, 0..n_instances);
 
         drop(render_pass);
         // End render pass, releases `encoder`
