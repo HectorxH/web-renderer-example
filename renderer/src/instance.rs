@@ -32,7 +32,7 @@ impl InstanceRaw {
         wgpu::VertexBufferLayout {
             array_stride: mem::size_of::<InstanceRaw>() as wgpu::BufferAddress,
             step_mode: wgpu::VertexStepMode::Instance,
-            attributes: &InstanceRaw::ATTRIBS,
+            attributes: &Self::ATTRIBS,
         }
     }
 }
