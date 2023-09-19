@@ -11,10 +11,10 @@ struct VertexInput {
 };
 
 struct InstanceInput {
-    @location(2) model_matrix_0: vec4<f32>,
-    @location(3) model_matrix_1: vec4<f32>,
-    @location(4) model_matrix_2: vec4<f32>,
-    @location(5) model_matrix_3: vec4<f32>,
+    @location(8) model_matrix_0: vec4<f32>,
+    @location(9) model_matrix_1: vec4<f32>,
+    @location(10) model_matrix_2: vec4<f32>,
+    @location(11) model_matrix_3: vec4<f32>,
 }
 
 struct VertexOutput {

@@ -21,10 +21,10 @@ impl Instance {
 
 impl InstanceRaw {
     const ATTRIBS: [wgpu::VertexAttribute; 4] = wgpu::vertex_attr_array![
-        2 => Float32x4,
-        3 => Float32x4,
-        4 => Float32x4,
-        5 => Float32x4
+        8 => Float32x4,
+        9 => Float32x4,
+        10 => Float32x4,
+        11 => Float32x4
     ];
 
     pub fn desc() -> wgpu::VertexBufferLayout<'static> {

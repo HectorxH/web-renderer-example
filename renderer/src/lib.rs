@@ -1,9 +1,10 @@
 //! Wgpu renderer implemented based on https://sotrh.github.io/learn-wgpu/
+mod assets;
 mod camera;
 mod instance;
+mod model;
 mod state;
 mod texture;
-mod vertex;
 
 use state::State;
 
@@ -15,7 +16,7 @@ use winit::{
 };
 
 #[cfg(target_arch = "wasm32")]
-use {wasm_bindgen::prelude::*, wasm_bindgen::JsCast};
+use wasm_bindgen::prelude::*;
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub async fn run() {
