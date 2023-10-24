@@ -3,6 +3,9 @@
 This repo contains a functioning example of a small wgpu based web renderer based on the [Learn Wgpu](https://sotrh.github.io/learn-wgpu/) tutorial.
 The proyect is built entierly on Rust as a learning experience. The server is made with [axum](https://github.com/tokio-rs/axum) to serve files and [askama](https://github.com/djc/askama) for html templating (not really used at the time of writing this).
 
+![Cube with UVs](renderer/img/CubesUV.png)
+![Cube with brick texture](renderer/img/CubesTextured.png)
+
 ## How to run
 
 You will need [wasm-pack](https://rustwasm.github.io/wasm-pack/) and [cargo](https://github.com/rust-lang/cargo).
